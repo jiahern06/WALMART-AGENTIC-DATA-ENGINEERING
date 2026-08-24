@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        unique_key='product_id'
+        unique_key='employee_id'
     )
 }}
 
@@ -9,7 +9,7 @@ SELECT
     *,
     current_timestamp() AS processed_at
 FROM 
-    {{ source('walmart_databricks', 'products') }}
+    {{ source('walmart_databricks', 'employees') }}
 
 
 {% if is_incremental() %}
