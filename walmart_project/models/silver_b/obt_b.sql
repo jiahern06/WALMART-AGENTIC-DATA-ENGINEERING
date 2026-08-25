@@ -1,7 +1,13 @@
+{#
+    Builds the source metadata used to generate the OBT (one big table).
+
+    Each configuration identifies a source table, its selected columns, a
+    table alias, and (except for the first source) its join condition.
+#}
 {% set configs =[
 
     {
-        "table": "walmart_db.silver_t.orders_t",
+        "table": "walmart_db.dbt_schema_silver_t.orders_t",
         "columns":"""o.order_id,
                         o.store_id,
                         o.order_timestamp,
@@ -16,6 +22,7 @@
                     """,
         "alias": "o"
     },
+
     {
         "table": "walmart_db.dbt_schema_silver_t.customers_t",
         "columns":"""    c.customer_id,
@@ -67,7 +74,6 @@
         "join_condition": "oi.product_id = p.product_id"
     },
 
-
     {
         "table": "walmart_db.dbt_schema_silver_t.employees_t",
         "columns":"""        e.employee_id,
@@ -102,11 +108,20 @@
 
 ] %}
 
+{#
+    Generates the projection list from each source's configured columns.
+    A comma is emitted between entries so the rendered SQL remains valid.
+#}
 SELECT 
     {% for config in configs %}
         {{ config['columns'] }}{% if not loop.last %},{% endif %}
     {% endfor %}
 FROM 
+{#
+    Generates the FROM clause dynamically. The first source becomes the base
+    table; every remaining source is appended as a LEFT JOIN using its stored
+    join condition, preserving orders even when related records are missing.
+#}
     {% for config in configs %}
         {% if loop.first %}
             {{ config['table'] }} AS {{ config['alias'] }}
