@@ -10,7 +10,7 @@ profile: "walmart_project"
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
-model-paths: ["models", "gold"]
+model-paths: ["models"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
 seed-paths: ["seeds"]
@@ -36,6 +36,10 @@ models:
     silver_b:
       +materialized: table
       +schema: silver_b
-    ephemeral:
-      +materialized: ephemeral
+    gold:
+      +materialized: table
       +schema: gold
+      ephemeral:
+        +materialized: ephemeral
+      fact:
+        +materialized: table
