@@ -360,6 +360,7 @@ FROM {{ ref('obt_b') }}
 ## 🧩 Orchestration
 
 **File**: `airflow_dbt/dags/orchestrate.py`
+<img width="1790" height="944" alt="Screenshot 2026-08-27 092726" src="https://github.com/user-attachments/assets/568ec678-3766-4d22-8aa9-a70e0fde71cf" />
 
 A single Airflow DAG (`orchestrate`) drives every layer in sequence:
 
