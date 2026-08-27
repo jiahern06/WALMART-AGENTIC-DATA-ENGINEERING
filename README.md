@@ -22,7 +22,7 @@
 - [Setup & Deployment](#-setup--deployment)
 - [Use Cases](#-use-cases)
 - [Dataset](#-dataset)
-- [Roadmap & Known Limitations](#-roadmap--known-limitations)
+
 
 ---
 
@@ -553,12 +553,4 @@ Synthetic Walmart retail data, seeded into PostgreSQL via `load_data.py`:
 
 ---
 
-## 🗺️ Roadmap & Known Limitations
 
-A few items worth calling out for anyone extending this project:
-
-- **Gold selector syntax**: the `gold_ephermeral` and `gold_facts` Airflow tasks currently run `dbt run --select gold/ephermeral` and `dbt run --select gold/fact`. Forward-slash isn't valid dbt graph-selector syntax for multi-level paths (it should be dot notation, e.g. `--select gold.fact`, or `--select path:models/gold/fact`), so both tasks currently log *"The selection criterion does not match any enabled nodes"* and complete as no-ops, while `silver_t`, `silver_b`, and the `dbt snapshot` dimensions build successfully.
-- **Task naming**: `gold_ephermeral` is a typo of `ephemeral` (the actual folder name), which compounds the selector mismatch above.
-- **Surrogate keys**: `fact_orders` joins to dimensions on natural keys rather than dimension surrogate keys, which pushes the burden of point-in-time-correct joins onto every downstream query (see the `dbt_valid_from`/`dbt_valid_to` join pattern in [Use Cases](#-use-cases)). A surrogate-key lookup step would simplify consumption.
-- **Secrets management**: the Databricks `host`, `token`, and `job_id` are hardcoded placeholders in `orchestrate.py`. These should move to Airflow Connections/Variables or a secrets backend before any real deployment.
-- **CI/CD**: there's no automated pipeline currently running `dbt test`/`dbt build` on pull requests — a natural next step alongside the existing Airflow-triggered tests.
