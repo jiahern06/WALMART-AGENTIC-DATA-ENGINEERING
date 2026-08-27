@@ -1,1 +1,0 @@
-SELECT * FROM {{ source('walmart_databricks', 'orders') }};
