@@ -51,7 +51,8 @@ A retail operation like Walmart generates constant transactional activity across
 
 ## 🏗️ Architecture
 
-![Architecture](architecture.png)
+<img width="1142" height="514" alt="Architecture" src="https://github.com/user-attachments/assets/aacb5289-5c4e-48f0-8f16-c7080e817ed6" />
+
 
 ```text
 ┌──────────────┐     ┌──────────────┐     ┌──────────────────┐     ┌──────────────────────┐     ┌──────────────────┐
