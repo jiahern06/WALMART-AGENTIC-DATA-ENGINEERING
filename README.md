@@ -53,23 +53,6 @@ A retail operation like Walmart generates constant transactional activity across
 
 <img width="1142" height="514" alt="Architecture" src="https://github.com/user-attachments/assets/aacb5289-5c4e-48f0-8f16-c7080e817ed6" />
 
-
-```text
-┌──────────────┐     ┌──────────────┐     ┌──────────────────┐     ┌──────────────────────┐     ┌──────────────────┐
-│              │ CDC │              │     │                   │     │                       │     │                   │
-│  AGENTIC DB  │────▶│              │     │   SILVER LAYER    │     │     SILVER LAYER      │     │    GOLD LAYER     │
-│ (PostgreSQL) │     │ BRONZE LAYER │────▶│    (Technical)     │────▶│      (Business)       │────▶│                   │
-│  ⇅ SQL       │     │              │ dbt │                   │ dbt │                       │ dbt │  SCD2 Dimensions  │
-│   Chatbot    │     │  Raw Delta   │ run │  6 incremental     │ run │  One-Big-Table (OBT)  │snap-│  + Fact Table      │
-├──────────────┤Files│  tables in   │     │  models, 1 per     │     │  joining all 6         │shot │                   │
-│   AWS S3     │────▶│  Unity       │     │  source table      │     │  entities + dbt tests  │+run │                   │
-│ (file drops) │     │  Catalog     │     │                     │     │                       │     │                   │
-└──────────────┘     └──────────────┘     └──────────────────┘     └──────────────────────┘     └──────────────────┘
-                             ▲                                                                              │
-                             └──────────────────────────────────────────────────────────────────────────────┘
-                                          Entire pipeline orchestrated by Apache Airflow (Docker)
-```
-
 **How to read the diagram**: business users interact with the operational **Agentic DB** through a SQL chatbot for ad-hoc questions. In parallel, changes to that database (via **CDC**) and file drops to **AWS S3** are incrementally ingested into a **Bronze** Delta layer on Databricks. From there, **dbt** (orchestrated by **Airflow**) builds a technical Silver layer, a business Silver layer (One Big Table with quality checks), and finally a Gold layer of SCD2 dimensions and a fact table.
 
 ---
